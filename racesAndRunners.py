@@ -6,7 +6,7 @@ def read_integer_between_numbers(prompt, mini, maximum):
                 return users_input
             else:
                 print(f"Numbers from {mini} to {maximum} only.")
-        except ValueError:
+        except:
             print("Sorry -number only please")
 
 
