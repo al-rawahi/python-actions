@@ -2,12 +2,14 @@ def read_integer_between_numbers(prompt, mini, maximum):
     while True:
         try:
             users_input = int(input(prompt))
-            if mini <= users_input <= maximum: # wrong =>
+            if mini <= users_input <= maximum: # was <= users_input =>
                 return users_input
             else:
                 print(f"Numbers from {mini} to {maximum} only.")
         except ValueError:
             print("Sorry -number only please")
+        except EOFError as e:
+            print(e)
 
 
 def read_nonempty_string(prompt):
@@ -43,11 +45,11 @@ def runners_data():
 
 def race_results(races_location):
     for i in range(len(races_location)):
-        print(f"{i+1}: {races_location[i]}") #{i} ggg
+        print(f"{i+1}: {races_location[i]}") # was {i}
     user_input = read_integer_between_numbers("Choice > ", 1, len(races_location))
-    venueAndNumber = races_location[user_input - 1] #venue = races_location[user_input - 1]
-    venueAndNumber = venueAndNumber.split(",") #added
-    venue = venueAndNumber[0] #added
+    venueAndNumber = races_location[user_input - 1] # was venue = races_location[user_input - 1]
+    venueAndNumber = venueAndNumber.split(",") # added
+    venue = venueAndNumber[0] # added
     id, time_taken = reading_race_results(venue)
     return id, time_taken, venue
 
@@ -123,23 +125,23 @@ def competitors_by_county(name, id):
 
 
 def reading_race_results(location):
-    location = location.split(",") #added
-    location = location[0] #added ggg
+    location = location.split(",") # added
+    location = location[0] # added
     with open(f"{location}.txt") as input_type:
         lines = input_type.readlines()
     id = []
     time_taken = []
     for line in lines:
-        line = line.strip("\n") #added ggg
-        split_line = line.split(",") #",".strip("\n") ggg
+        line = line.strip("\n") # added
+        split_line = line.split(",") # was ",".strip("\n")
         id.append(split_line[0])
-        time_taken.append(int(split_line[1])) #[1].strip("\n") ggg
+        time_taken.append(int(split_line[1])) # was [1].strip("\n")
     return id, time_taken
 
 
 def reading_race_results_of_relevant_runner(location, runner_id):
     location = location.split(",")  # added
-    location = location[0]  # added ggg
+    location = location[0]  # added
     with open(f"{location}.txt") as input_type:
         lines = input_type.readlines()
     id = []
@@ -182,7 +184,7 @@ def convert_time_to_minutes_and_seconds(time_taken):
 
 def sorting_where_runner_came_in_race(location, time):
     location = location.split(",")  # added
-    location = location[0]  # added ggg
+    location = location[0]  # added
     with open(f"{location}.txt") as input_type:
         lines = input_type.readlines()
     time_taken = []
@@ -230,20 +232,36 @@ def displaying_runners_who_have_won_at_least_one_race(races_location, runners_na
         print(f"{runners[i]} ({fastest_runner})")
 
 
+def displaying_runners_who_have_not_won_any_race(races_location): # new function added
+    print(f"The following runners have not won any race:")
+    print(f"-" * 55)
+    name, id = runners_data()
+    winners = []
+    for i, location in enumerate(races_location):
+        id, time_taken = reading_race_results(location)
+        fastest_runner = winner_of_race(id, time_taken)
+        if fastest_runner not in winners:
+            winners.append(fastest_runner)
+    for i in range(len(id)):
+        if id[i] not in winners:
+            print(f"{i+1}. {id[i]} {name[i]}")
+
+
 def main():
     races_location = race_venues()
     runners_name, runners_id = runners_data()
     MENU = "1. Show the results for a race \n2. Add results for a race \n3. Show all competitors by county " \
            "\n4. Show the winner of each race \n5. Show all the race times for one competitor " \
-           "\n6. Show all competitors who have won a race \n7. Quit \n>>> "
-    input_menu = read_integer_between_numbers(MENU, 1, 7)
+           "\n6. Show all competitors who have won a race \n7. Show all competitors who haven't won any race \n" \
+           "8. Quit \n>>> "
+    input_menu = read_integer_between_numbers(MENU, 1, 8)
 
-    while input_menu != 7: #ggg ==
+    while input_menu != 8: # ==7
         if input_menu == 1:
             id, time_taken, venue = race_results(races_location)
             fastest_runner = winner_of_race(id, time_taken)
             display_races(id, time_taken, venue, fastest_runner)
-        elif input_menu == 2: #ggg !=
+        elif input_menu == 2: # !=
             users_venue(races_location, runners_id)
         elif input_menu == 3:
             competitors_by_county(runners_name, runners_id)
@@ -254,9 +272,11 @@ def main():
             displaying_race_times_one_competitor(races_location, runner, id)
         elif input_menu == 6:
             displaying_runners_who_have_won_at_least_one_race(races_location, runners_name, runners_id)
+        elif input_menu == 7: # added
+            displaying_runners_who_have_not_won_any_race(races_location)
         print()
-        input_menu = read_integer_between_numbers(MENU, 1, 7)
-    updating_races_file(races_location)
+        input_menu = read_integer_between_numbers(MENU, 1, 8)
+    #updating_races_file(races_location) # commented
 
 
 main()
