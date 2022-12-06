@@ -2,12 +2,13 @@ def read_integer_between_numbers(prompt, mini, maximum):
     while True:
         try:
             users_input = int(input(prompt))
-            if mini <= users_input <= maximum: #ggg
+            if mini <= users_input <= maximum: # wrong =>
                 return users_input
             else:
                 print(f"Numbers from {mini} to {maximum} only.")
-        except EOFError:
+        except ValueError:
             print("Sorry -number only please")
+            break
 
 
 def read_nonempty_string(prompt):
