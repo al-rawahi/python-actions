@@ -1,8 +1,10 @@
+# Reads two integers min and max. Doesn't allow user to enter integer less
+# than the min or larger than the max
 def read_integer_between_numbers(prompt, mini, maximum):
     while True:
         try:
             users_input = int(input(prompt))
-            if mini <= users_input <= maximum: # was <= users_input =>
+            if mini <= users_input <= maximum: # was maximum <= users_input >= mini
                 return users_input
             else:
                 print(f"Numbers from {mini} to {maximum} only.")
@@ -12,6 +14,7 @@ def read_integer_between_numbers(prompt, mini, maximum):
             print(e)
 
 
+# Reads a string and ensures that it's not empty
 def read_nonempty_string(prompt):
     while True:
         users_input = input(prompt)
@@ -20,6 +23,7 @@ def read_nonempty_string(prompt):
     return users_input
 
 
+# Reads a positive integer
 def read_integer(prompt):
     while True:
         try:
@@ -27,9 +31,10 @@ def read_integer(prompt):
             if users_input >= 0:
                 return users_input
         except ValueError:
-            print("Sorry -number only please")
+            print("Sorry positive number only please")
 
 
+# Gets data from Runners.txt file and returns runners names and IDs as lists
 def runners_data():
     with open("Runners.txt") as input:
         lines = input.readlines()
@@ -43,6 +48,7 @@ def runners_data():
     return runners_name, runners_id
 
 
+# Gets a list of races locations and returns the results for each location
 def race_results(races_location):
     for i in range(len(races_location)):
         print(f"{i+1}: {races_location[i]}") # was {i}
@@ -54,6 +60,7 @@ def race_results(races_location):
     return id, time_taken, venue
 
 
+# Gets races locations from Races.txt file and return them as a list
 def race_venues():
     with open("Races.txt") as input:
         lines = input.readlines()
@@ -63,6 +70,7 @@ def race_venues():
     return races_location
 
 
+# Gets runners IDs and their corresponding times for a race. It returns the ID of the winner
 def winner_of_race(id, time_taken):
     quickest_time = min(time_taken)
     winner = ""
@@ -72,8 +80,9 @@ def winner_of_race(id, time_taken):
     return winner
 
 
+# Displays runners results in a race
 def display_races(id, time_taken, venue, fastest_runner):
-    MINUTE = 50
+    MINUTE = 60 # was 50
     print(f"Results for {venue}")
     print(f"="*37)
     minutes = []
@@ -88,6 +97,7 @@ def display_races(id, time_taken, venue, fastest_runner):
     return winner # added
 
 
+# Adds a new venue and get the results from user
 def users_venue(races_location, runners_id):
     while True:
         user_location = read_nonempty_string("Where will the new race take place? ").capitalize()
@@ -106,6 +116,7 @@ def users_venue(races_location, runners_id):
     connection.close()
 
 
+# Updates Races.txt file
 def updating_races_file(races_location):
     connection = open(f"Races.txt", "w")
     for i in range(len(races_location)):
@@ -113,6 +124,7 @@ def updating_races_file(races_location):
     connection.close()
 
 
+# Prints runners by their counties
 def competitors_by_county(name, id):
     print("Cork runners")
     print("=" * 20)
@@ -126,6 +138,7 @@ def competitors_by_county(name, id):
             print(f"{name[i]} ({id[i]})")
 
 
+# Gets a race location and returns the results for that race
 def reading_race_results(location):
     location = location.split(",") # added
     location = location[0] # added
@@ -141,6 +154,7 @@ def reading_race_results(location):
     return id, time_taken
 
 
+# Gets a runner ID and returns the results for that runner
 def reading_race_results_of_relevant_runner(location, runner_id):
     location = location.split(",")  # added
     location = location[0]  # added
@@ -159,6 +173,7 @@ def reading_race_results_of_relevant_runner(location, runner_id):
     return None
 
 
+# Displays the winner of each race in Races.txt
 def displaying_winners_of_each_race(races_location):
     print("Venue             Looser")
     print("="*24)
@@ -168,6 +183,7 @@ def displaying_winners_of_each_race(races_location):
         print(f"{races_location[i]:<18s}{fastest_runner}")
 
 
+# Gets a list of runners names and IDs and prompts user to select a runner and returns it
 def relevant_runner_info(runners_name, runners_id):
     for i in range(len(runners_name)):
         print(f"{i + 1}: {runners_name[i]}")
@@ -177,13 +193,15 @@ def relevant_runner_info(runners_name, runners_id):
     return runner, id
 
 
+# Gets time in seconds and converts it to minutes and seconds
 def convert_time_to_minutes_and_seconds(time_taken):
-    MINUTE = 50
+    MINUTE = 60 # was 50
     minutes = time_taken // MINUTE
     seconds = time_taken % MINUTE
     return minutes, seconds
 
 
+# Finds a runner position in a race
 def sorting_where_runner_came_in_race(location, time):
     location = location.split(",")  # added
     location = location[0]  # added
@@ -194,11 +212,11 @@ def sorting_where_runner_came_in_race(location, time):
         split_line = line.split(",".strip("\n"))
         t = int(split_line[1].strip("\n"))
         time_taken.append(t)
-
     time_taken.sort()
     return time_taken.index(time) + 1, len(lines)
 
 
+# Displays all races time for a runner
 def displaying_race_times_one_competitor(races_location, runner, id):
     print(f"{runner} ({id})")
     print(f"-"*35)
@@ -210,6 +228,7 @@ def displaying_race_times_one_competitor(races_location, runner, id):
             print(f"{races_location[i]} {minutes} mins {seconds} secs ({came_in_race} of {number_in_race})")
 
 
+# Finds the name of a runner
 def finding_name_of_winner(fastest_runner, id, runners_name):
     runner = ""
     for i in range(len(id)):
@@ -218,6 +237,7 @@ def finding_name_of_winner(fastest_runner, id, runners_name):
     return runner
 
 
+# Displays all runners who have won at least one race
 def displaying_runners_who_have_won_at_least_one_race(races_location, runners_name, runners_id):
     print(f"The following runners have all won at least one race:")
     print(f"-" * 55)
@@ -237,6 +257,7 @@ def displaying_runners_who_have_won_at_least_one_race(races_location, runners_na
     return str(ids) # added
 
 
+# Displays all runners who haven't won any race
 def displaying_runners_who_have_not_won_any_race(races_location): # new function added
     print(f"The following runners have not won any race:")
     print(f"-" * 55)
@@ -284,13 +305,10 @@ def main():
             displaying_runners_who_have_not_won_any_race(races_location)
         print()
         input_menu = read_integer_between_numbers(MENU, 1, 8)
-    #updating_races_file(races_location) # commented
+        updating_races_file(races_location) # one tab to the right
 
 
-if __name__ == "__main__":
+if __name__ == "__main__": # added
     main()
 
-
-    
-    
     
