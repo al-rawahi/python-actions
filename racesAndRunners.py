@@ -8,6 +8,8 @@ def read_integer_between_numbers(prompt, mini, maximum):
                 print(f"Numbers from {mini} to {maximum} only.")
         except ValueError:
             print("Sorry -number only please")
+        except EOFError as e:
+            print(e)
 
 
 def read_nonempty_string(prompt):
@@ -81,7 +83,9 @@ def display_races(id, time_taken, venue, fastest_runner):
         seconds.append(time_taken[i] % MINUTE)
     for i in range(len(id)):
         print(f"{id[i]:<10s} {minutes[i]} minutes and {seconds[i]} seconds")
-    print(f"{fastest_runner} won the race.")
+    winner = f"{fastest_runner} won the race." # added
+    print(winner)
+    return winner # added
 
 
 def users_venue(races_location, runners_id):
@@ -219,6 +223,7 @@ def displaying_runners_who_have_won_at_least_one_race(races_location, runners_na
     print(f"-" * 55)
     winners = []
     runners = []
+    ids = [] # added
     for i, location in enumerate(races_location):
         id, time_taken = reading_race_results(location)
         fastest_runner = winner_of_race(id, time_taken)
@@ -228,6 +233,8 @@ def displaying_runners_who_have_won_at_least_one_race(races_location, runners_na
             runners.append(name_of_runner)
     for i, fastest_runner in enumerate(winners):
         print(f"{runners[i]} ({fastest_runner})")
+        ids.append(fastest_runner) # added
+    return str(ids) # added
 
 
 def displaying_runners_who_have_not_won_any_race(races_location): # new function added
@@ -235,6 +242,7 @@ def displaying_runners_who_have_not_won_any_race(races_location): # new function
     print(f"-" * 55)
     name, id = runners_data()
     winners = []
+    testNames = []
     for i, location in enumerate(races_location):
         id, time_taken = reading_race_results(location)
         fastest_runner = winner_of_race(id, time_taken)
@@ -243,6 +251,8 @@ def displaying_runners_who_have_not_won_any_race(races_location): # new function
     for i in range(len(id)):
         if id[i] not in winners:
             print(f"{i+1}. {id[i]} {name[i]}")
+            testNames.append(name[i])
+    return str(testNames)
 
 
 def main():
@@ -277,5 +287,6 @@ def main():
     #updating_races_file(races_location) # commented
 
 
-main()
+if __name__ == "__main__":
+    main()
 
